@@ -7,5 +7,5 @@ Source code for the paper [MinBackProp – Backpropagating through Minimal Solve
   <img src="scheme-github.svg"/>
 </p> 
 
-## TODO
-The source code and trained models will be released soon.
+### TODO
+The source code and the trained models will be released soon.
