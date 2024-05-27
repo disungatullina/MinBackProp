@@ -11,8 +11,9 @@ Source code for the paper [MinBackProp – Backpropagating through Minimal Solve
 
 ## Outlier Detection for Essential Matrix Estimation
 We evaluate our MinBackProp on the outlier detection for essential matrix estimation. This code is based on the [baseline](https://github.com/weitong8591/differentiable_ransac/tree/fc40fe0a5a7eeb0e2ec6b185d6218c2005a98cf5) we compare with; the forward pass is the same for both the baseline and MinBackProp and the backward pass differs ($\color{rgb(192,0,0)}{\text{Autograd}}$ vs $\color{rgb(0,112,192)}{\text{DDN}}$ / $\color{rgb(0,176,80)}{\text{IFT}}$).
-### Requirements
-Here are the required packages
+
+### Requirements and installation
+Install the required packages
 ```
 python = 3.8.10	
 pytorch = 1.12.1
@@ -25,7 +26,7 @@ scikit-learn
 einops
 yacs
 ```
-use it with ```conda create --name <env> --file requirements.txt```. For inference, build [MAGSAC++](https://github.com/danini/magsac.git) with
+For inference, build [MAGSAC++](https://github.com/danini/magsac.git) with
 ``` bash
 git clone https://github.com/weitong8591/magsac.git --recursive
 cd magsac
@@ -36,17 +37,24 @@ make
 cd ..
 python setup.py install
 ```
+Then clone the project with submodules
+``` bash
+git clone --recurse-submodules -j8 https://github.com/disungatullina/MinBackProp.git
+cd MinBackProp
+```
 
 ### Training
 Use ```-ift 1``` for the IFT, ```-ift 2``` for the DDN, and ```-ift 0``` for Autograd (baseline). Default is ```-ift 1```.
 ```bash
 python train.py -ift 1 -nf 2000 -m pretrained_models/weights_init_net_3_sampler_0_epoch_1000_E_rs_r0.80_t0.00_w1_1.00_.net -bs 32 -e 10 -tr 1 -t 0.75 -pth <data_path>
 ```
+
 ### Evaluation
 Models for the inference stored in the ```models``` directory.
 ```bash
 python test_magsac.py -nf 2000 -m models/ift.net -bs 32 -bm 1 -t 2 -pth <data_path>
 ```
+
 ### Dataset
 Download the RootSIFT features of the PhotoTourism dataset from [here](https://cmp.felk.cvut.cz/~weitong/nabla_ransac/diff_ransac_data.zip).
 
