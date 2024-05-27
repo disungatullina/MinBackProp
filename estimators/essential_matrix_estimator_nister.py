@@ -48,7 +48,6 @@ except ImportError:
 
 
 class EssentialMatrixEstimatorNister(object):
-
     def __init__(self, device="cuda", ift=1):
         self.sample_size = 5
         self.device = device
@@ -67,7 +66,6 @@ class EssentialMatrixEstimatorNister(object):
         unnormalzied_threshold=None,
         best_score=0,
     ):
-
         # minimal solver
         if matches.shape[1] == self.sample_size:
             return self.estimate_minimal_model(matches, weights)

@@ -6,7 +6,6 @@ from datasets import Dataset
 
 
 def test(model, test_loader, opt):
-
     OUT_DIR = "results/"
 
     with torch.no_grad():
@@ -27,7 +26,6 @@ def test(model, test_loader, opt):
         model.to(data_type)
 
         for idx, test_data in enumerate(tqdm(test_loader)):
-
             correspondences, K1, K2 = (
                 test_data["correspondences"].to(opt.device, data_type),
                 test_data["K1"].to(opt.device, data_type),

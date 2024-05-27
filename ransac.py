@@ -7,7 +7,6 @@ from ddn.ddn.pytorch.node import *
 
 
 class RANSAC(object):
-
     def __init__(
         self,
         estimator,
@@ -42,7 +41,6 @@ class RANSAC(object):
         self.ift = ift
 
     def __call__(self, matches, logits, K1, K2, gt_model):
-
         iterations = 0
         best_score = 0
         point_number = matches.shape[0]
@@ -54,7 +52,6 @@ class RANSAC(object):
         threshold = self.threshold / normalized_multipler
         max_iters = self.max_iterations
         while iterations < max_iters:
-
             samples, soft_weights = self.sampler.sample(logits)
             points = matches.repeat([self.ransac_batch_size, 1, 1]) * samples.unsqueeze(
                 -1
@@ -131,17 +128,20 @@ class RANSAC(object):
                     best_inlier_number = torch.sum(best_mask)
                     # Apply local optimization if needed
                     if self.lo:
-                        best_score, best_mask, best_model, best_inlier_number = (
-                            self.localOptimization(
-                                best_score,
-                                best_mask,
-                                best_model,
-                                best_inlier_number,
-                                matches,
-                                K1,
-                                K2,
-                                threshold,
-                            )
+                        (
+                            best_score,
+                            best_mask,
+                            best_model,
+                            best_inlier_number,
+                        ) = self.localOptimization(
+                            best_score,
+                            best_mask,
+                            best_model,
+                            best_inlier_number,
+                            matches,
+                            K1,
+                            K2,
+                            threshold,
                         )
 
                     # use adaptive iteration number when testing, update the max iteration number by inlier counts
@@ -243,7 +243,11 @@ class RANSAC(object):
             0.0,
             (
                 math.log10(1.0 - confidence)
-                / (math.log10(1 - inlier_ratio**self.estimator.sample_size + self.eps))
+                / (
+                    math.log10(
+                        1 - inlier_ratio**self.estimator.sample_size + self.eps
+                    )
+                )
             ),
         )
 
@@ -258,7 +262,6 @@ class RANSAC(object):
         K2,
         threshold,
     ):
-
         # Do a single or iterated LSQ fitting
         if self.lo < 3:
             iters = 1

@@ -9,7 +9,6 @@ from datasets import Dataset
 
 
 def test(model, test_loader, opt):
-
     with torch.no_grad():
         avg_model_time = 0  # runtime of the network forward pass
         avg_ransac_time = 0  # runtime of RANSAC
@@ -21,7 +20,6 @@ def test(model, test_loader, opt):
         invalid_pairs = 0
 
         for idx, test_data in enumerate(tqdm(test_loader)):
-
             correspondences, K1, K2 = (
                 test_data["correspondences"].to(opt.device),
                 test_data["K1"].to(opt.device),
@@ -57,7 +55,6 @@ def test(model, test_loader, opt):
             ransac_time = 0
             correspondences = correspondences.cpu().detach()
             for b in range(batch_size):
-
                 inliers = torch.zeros(1, 2000, 1)  # inlier mask of the estimated model
                 # sorted_indices = sorted_indices_batch[b]
                 weights = inlier_weights[b].cpu().detach().numpy()
@@ -176,7 +173,6 @@ def test(model, test_loader, opt):
 
 
 if __name__ == "__main__":
-
     # Parse the parameters
     parser = create_parser(description="Generalized Differentiable RANSAC.")
     opt = parser.parse_args()

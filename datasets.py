@@ -11,7 +11,6 @@ class Dataset(data.Dataset):
     """From NG-RANSAC collect the correspondences."""
 
     def __init__(self, folders, ratiothreshold=0.8, nfeatures=2000):
-
         # access the input points
 
         self.nfeatures = nfeatures
@@ -26,7 +25,6 @@ class Dataset(data.Dataset):
         return len(self.files)
 
     def __getitem__(self, index):
-
         data = np.load(self.files[index], allow_pickle=True, encoding="latin1")
 
         # correspondence coordinates and matching ratios (side information)

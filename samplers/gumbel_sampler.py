@@ -28,7 +28,6 @@ class GumbelSoftmaxSampler:
         self.tau = tau
 
     def sample(self, logits=None, num_points=2000, selected=None):
-
         if logits == None:
             logits = torch.ones(
                 [self.batch_size, num_points],

@@ -2,7 +2,6 @@ import torch
 
 
 class MSACScore(object):
-
     def __init__(self, device="cuda"):
         # self.threshold = (3 / 2 * threshold)**2
         # self.th = (3 / 2) * threshold

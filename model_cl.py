@@ -202,7 +202,6 @@ class RANSACLayer(nn.Module):
         )
 
     def forward(self, points, weights, K1, K2, im_size1, im_size2, ground_truth=None):
-
         # estimator = self.initialize_ransac(points.shape[0], K1, K2)
         points_ = points.clone()
 
@@ -319,7 +318,6 @@ class DeepRansac_CLNet(nn.Module):
     def forward(
         self, points, K1, K2, im_size1, im_size2, prob_type=0, gt=None, predict=True
     ):
-
         B, _, N, _ = points.shape
         w1 = self.ds_0(points)
 
@@ -393,7 +391,6 @@ class CLNet(nn.Module):
         )
 
     def forward(self, points, prob_type=0):
-
         B, _, N, _ = points.shape
         # import pdb; pdb.set_trace()
 

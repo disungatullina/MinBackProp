@@ -86,7 +86,6 @@ def train(model, train_loader, valid_loader, opt):
     for epoch in range(opt.epochs):
         # each step
         for idx, train_data in enumerate(tqdm(train_loader)):
-
             model.train()
 
             # one step
@@ -188,7 +187,6 @@ def train(model, train_loader, valid_loader, opt):
 
 
 if __name__ == "__main__":
-
     OUT_DIR = "results/"
     # Parse the parameters
     parser = create_parser(description="Generalized Differentiable RANSAC.")

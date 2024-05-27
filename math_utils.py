@@ -118,7 +118,6 @@ class StrumPolynomialSolver(object):
         self.n = n
 
     def build_sturm_seq(self, fvec):
-
         f = torch.zeros(3 * self.n, dtype=torch.float64, device=fvec.device)
         f[: 2 * self.n + 1] = fvec
         f[2 * self.n + 1 :] = torch.tensor(
@@ -257,7 +256,6 @@ class StrumPolynomialSolver(object):
     def isolate_roots(
         self, fvec, svec, a, b, sa, sb, tol, depth, n_roots=None, roots=None
     ):
-
         if depth > 30:
             return 0, roots
 
@@ -325,7 +323,6 @@ class StrumPolynomialSolverBatch(object):
         self.batch_size = batch_size
 
     def build_sturm_seq(self, fvec):
-
         f = torch.zeros(
             self.batch_size, 3 * self.n, dtype=torch.float64, device=fvec.device
         )
@@ -493,7 +490,6 @@ class StrumPolynomialSolverBatch(object):
     def isolate_roots(
         self, fvec, svec, a, b, sa, sb, tol, depth, n_roots=None, roots=None
     ):
-
         if depth > 30:
             return 0, roots
 
@@ -520,7 +516,6 @@ class StrumPolynomialSolverBatch(object):
         return n_roots, roots
 
     def bisect_sturm(self, coeffs, custom_sols=0, tol=1e-10):
-
         # fvec is the polynomial and its first derivative.
         fvec = torch.zeros(
             self.batch_size, 2 * self.n + 1, dtype=torch.float64, device=coeffs.device
