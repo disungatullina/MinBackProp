@@ -4,7 +4,6 @@ from math_utils import *
 from utils import *
 from cv_utils import *
 
-# from ddn.pytorch.node import *
 
 try:
     from pymagsac import optimizeEssentialMatrix
