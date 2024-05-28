@@ -8,6 +8,7 @@ from datasets import Dataset
 from tensorboardX import SummaryWriter
 from sklearn.model_selection import train_test_split
 
+import time
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -82,6 +83,8 @@ def train(model, train_loader, valid_loader, opt):
     train_losses = []
     valid_losses = []
 
+    time_history = []
+
     # start epoch
     for epoch in range(opt.epochs):
         # each step
@@ -100,7 +103,10 @@ def train(model, train_loader, valid_loader, opt):
                 continue
 
             try:
+                start = time.time()
                 train_loss.backward()
+                end = time.time()
+                time_history.append(end - start)
                 print("successfully back-propagation", train_loss)
 
             except Exception as e:
@@ -160,6 +166,11 @@ def train(model, train_loader, valid_loader, opt):
         # store the network every so often
         torch.save(
             model.state_dict(), "results/" + saved_file + "/model" + str(epoch) + ".net"
+        )
+        print("Mean backward time: ", np.array(time_history).mean())
+        np.save(
+            os.path.join("results", saved_file, "backward_time.npy"),
+            np.array(time_history).mean(),
         )
 
         # validation
