@@ -202,7 +202,7 @@ if __name__ == "__main__":
     # use the pretrained model to initialize the weights if provided.
     if len(config.model) > 0:
         train_model.load_state_dict(
-            torch.load(config.model, map_location=torch.device("cpu"))
+            torch.load(config.model, map_location=config.device)
         )
     else:
         train_model.apply(init_weights)
