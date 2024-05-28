@@ -50,7 +50,7 @@ python train.py -ift 1 -nf 2000 -m pretrained_models/weights_init_net_3_sampler_
 ```
 
 ### Evaluation
-Models for the inference stored in the ```models``` directory.
+Models for inference are stored in the ```models``` directory.
 ```bash
 python test_magsac.py -nf 2000 -m models/ift.net -bs 32 -bm 1 -t 2 -pth <data_path>
 ```
