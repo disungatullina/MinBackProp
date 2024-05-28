@@ -58,6 +58,21 @@ python test_magsac.py -nf 2000 -m models/ift.net -bs 32 -bm 1 -t 2 -pth <data_pa
 ### Dataset
 Download the RootSIFT features of the PhotoTourism dataset from [here](https://cmp.felk.cvut.cz/~weitong/nabla_ransac/diff_ransac_data.zip).
 
+### Command line arguments
+```
+-ift: backprop method to use, 0-autograd, 1-ift, 2-ddn, default=1
+-pth: path to the dataset
+-nf: number of features, default=2000
+-m: pretrained model to init or trained model for inference
+-bs: batch size, default=32
+-e: the number of epochs, default=10
+-tr: train or test mode, default=0
+-t: threshold, default=0.75
+-lr: learning rate, default=1e-4
+-bm: batch mode, using all the 12 testing scenes defined in utils.py, default=0
+-ds: name of a scene, if single scene used, default="st_peters_square"
+```
+See more command line arguments in ```utils.py```.
 
 <!-- ## Toy examples
 
