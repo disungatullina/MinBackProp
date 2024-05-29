@@ -81,10 +81,21 @@ blah
 
 ### Fundamental Matrix Estimation with an Outlier
 blah
-
-## Citation
-Cite us as -->
-
+-->
+<!-- 
 ## TODO
 - [ ] Add toy examples
 - [ ] Docker image for outlier detection for essential matrix estimation
+-->
+## Citation
+If you use our algorithm, please cite
+```
+@misc{sungatullina2024minbackprop,
+      title={MinBackProp -- Backpropagating through Minimal Solvers}, 
+      author={Diana Sungatullina and Tomas Pajdla},
+      year={2024},
+      eprint={2404.17993},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
