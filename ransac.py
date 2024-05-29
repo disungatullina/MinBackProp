@@ -301,7 +301,7 @@ class RANSAC(object):
                     break
         elif self.lo == 3:  # Do inner RANSAC
             # Calculate the sample size
-            sample_size = 7 * self.estimator.sample_size
+            sample_size = self.estimator.sample_size
             if best_inlier_number < sample_size:
                 sample_size = self.estimator.sample_size
 
@@ -333,7 +333,7 @@ class RANSAC(object):
                     best_inlier_number = torch.sum(best_mask)
 
                     # Re-calculate the sample size
-                    sample_size = 7 * self.estimator.sample_size
+                    sample_size = self.estimator.sample_size
                     if best_inlier_number < sample_size:
                         sample_size = self.estimator.sample_size
 
