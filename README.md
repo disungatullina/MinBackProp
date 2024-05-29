@@ -82,11 +82,11 @@ blah
 ### Fundamental Matrix Estimation with an Outlier
 blah
 -->
-<!-- 
+
 ## TODO
 - [ ] Add toy examples
 - [ ] Docker image for outlier detection for essential matrix estimation
--->
+
 ## Citation
 If you use our algorithm, please cite
 ```
