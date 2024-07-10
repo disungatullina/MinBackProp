@@ -10,3 +10,5 @@ To start optimization run
 python estimate_rotation.py --ift --ddn --autograd --plot
 ```
 graphs will be saved at the ```results``` directory.
+
+Formulas for IFT calculated with ```R_4p.mw``` and Maple software.
