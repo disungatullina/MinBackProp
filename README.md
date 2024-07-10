@@ -28,7 +28,7 @@ yacs
 ```
 For inference, build [MAGSAC++](https://github.com/danini/magsac.git) with
 ``` bash
-git clone https://github.com/disungatullina --recursive
+git clone https://github.com/disungatullina/magsac.git --recursive
 cd magsac
 mkdir build
 cd build
