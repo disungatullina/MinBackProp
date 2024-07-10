@@ -82,9 +82,12 @@ cd toy_examples
 python estimate_rotation.py --ift --ddn --autograd --plot
 ```
 
-<!--### Fundamental Matrix Estimation with an Outlier
-blah
--->
+### Fundamental Matrix Estimation with an Outlier
+```bash
+cd toy_examples
+python estimate_fundamental.py --ift --ddn --autograd --plot
+```
+
 
 ## TODO
 - [ ] Add toy examples
