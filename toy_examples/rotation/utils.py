@@ -49,9 +49,10 @@ def plot_graphs_w(
         )
         plt.yticks(fontsize=18)
         plt.legend(loc="lower right")
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-        plt.savefig(os.path.join(out_dir, "w_{}.png".format(i)))
+        out_path = os.path.join(out_dir, "rotation")
+        if not os.path.exists(out_path):
+            os.makedirs(out_path)
+        plt.savefig(os.path.join(out_path, "w_{}.png".format(i)))
         plt.show()
 
 
@@ -73,6 +74,7 @@ def plot_graphs_loss(
         fontsize=18,
     )
     plt.legend(loc="upper right")
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
-    plt.savefig(os.path.join(out_dir, "global_loss.png"))
+    out_path = os.path.join(out_dir, "rotation")
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
+    plt.savefig(os.path.join(out_path, "global_loss.png"))
