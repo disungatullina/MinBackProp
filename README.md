@@ -74,12 +74,15 @@ Download the RootSIFT features of the PhotoTourism dataset from [here](https://c
 ```
 See more command line arguments in ```utils.py```.
 
-<!-- ## Toy examples
+## Toy examples
 
 ### 3D Point Registration with an Outlier
-blah
+```bash
+cd toy_examples
+python estimate_rotation.py --ift --ddn --autograd --plot
+```
 
-### Fundamental Matrix Estimation with an Outlier
+<!--### Fundamental Matrix Estimation with an Outlier
 blah
 -->
 
