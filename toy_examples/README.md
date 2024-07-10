@@ -10,7 +10,7 @@ To start optimization run
 ```bash
 python estimate_rotation.py --ift --ddn --autograd --plot
 ```
-graphs will be saved in the ```results``` directory.
+graphs will be saved in the ```results/rotation``` directory.
 
 Formulas for IFT calculated with ```R_4p.mw``` and Maple software.
 
@@ -19,6 +19,6 @@ To start optimization run
 ```bash
 python estimate_fundamental.py --ift --ddn --autograd --plot
 ```
-graphs will be saved in the ```results``` directory.
+graphs will be saved in the ```results/fundamental``` directory.
 
 Formulas for IFT calculated with ```F_15p_one_constr.mw``` and Maple software.
