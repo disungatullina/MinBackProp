@@ -14,7 +14,7 @@ graphs will be saved at the ```results``` directory.
 
 Formulas for IFT calculated with ```R_4p.mw``` and Maple software.
 
-## Fundamental matrix estimation with an outlier
+## Fundamental Matrix Estimation with an Outlier
 To start optimization run
 ```bash
 python estimate_fundamental.py --ift --ddn --autograd --plot
