@@ -28,7 +28,7 @@ yacs
 ```
 For inference, build [MAGSAC++](https://github.com/danini/magsac.git) with
 ``` bash
-git clone https://github.com/weitong8591/magsac.git --recursive
+git clone https://github.com/disungatullina --recursive
 cd magsac
 mkdir build
 cd build
@@ -87,7 +87,6 @@ python estimate_rotation.py --ift --ddn --autograd --plot
 cd toy_examples
 python estimate_fundamental.py --ift --ddn --autograd --plot
 ```
-
 
 ## TODO
 - [x] Add toy examples
