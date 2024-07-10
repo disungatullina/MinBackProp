@@ -39,7 +39,7 @@ python setup.py install
 ```
 Then clone the project with submodules
 ``` bash
-git clone --recurse-submodules -j8 https://github.com/disungatullina/MinBackProp.git
+git clone https://github.com/disungatullina/MinBackProp.git --recurse-submodules -j8
 cd MinBackProp
 ```
 
