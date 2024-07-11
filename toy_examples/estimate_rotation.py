@@ -1,10 +1,7 @@
 import os
 import sys
 import torch
-import random
 import argparse
-import numpy as np
-import matplotlib.pyplot as plt
 from math import degrees
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -21,14 +18,7 @@ warnings.filterwarnings("ignore")
 
 # set main options
 torch.set_printoptions(linewidth=200)
-torch.set_printoptions(precision=6)
-np.set_printoptions(precision=6, suppress=True)
-
-# set random seed
-RANDOM_SEED = 436255
-random.seed(RANDOM_SEED)
-torch.manual_seed(RANDOM_SEED)
-np.random.seed(RANDOM_SEED)
+torch.set_printoptions(precision=4)
 
 
 def run_optimization(optimization_type, P, Q, R_true, opt):
