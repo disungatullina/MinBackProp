@@ -13,7 +13,7 @@ import rotation.losses as L
 from ddn.ddn.pytorch.node import *
 from rotation.nodes import RigitNodeConstraint, SVDLayer, IFTLayer
 from rotation.datasets import get_dataset
-from rotation.utils import get_initial_weights, plot_graphs_w, plot_graphs_loss
+from utils import get_initial_weights, plot_graphs_w, plot_graphs_loss
 
 import warnings
 
@@ -69,7 +69,7 @@ def run_optimization(optimization_type, P, Q, R_true, opt):
     def reevaluate():
         optimizer.zero_grad()
         R = optimization_layer(P, Q, w)
-        loss = J(P, Q, torch.nn.functional.relu(w), R_true, R)
+        loss = J(R_true, R)
         loss_history.append(loss[0].item())
         loss.backward()
         torch.nn.utils.clip_grad_norm_([w], 1.0)
@@ -89,8 +89,8 @@ def run_optimization(optimization_type, P, Q, R_true, opt):
     R = optimization_layer(P, Q, w)
 
     # compute errors
-    angle_error = L.angle_error(P, Q, w, R_true, y=R)
-    frob_norm = L.frobenius_norm(P, Q, w, R_true, y=R)
+    angle_error = L.angle_error(R_true, R)
+    frob_norm = L.frobenius_norm(R_true, R)
 
     # print errors
     print(
@@ -129,14 +129,14 @@ def main(opt):
             w_history_ift,
             w_history_svd=w_history_svd,
             w_history_ddn=w_history_ddn,
-            out_dir=opt.out,
+            out_dir=os.path.join(opt.out, "rotation"),
         )
 
         plot_graphs_loss(
             loss_history_ift,
             loss_history_svd=loss_history_svd,
             loss_history_ddn=loss_history_ddn,
-            out_dir=opt.out,
+            out_dir=os.path.join(opt.out, "rotation"),
         )
 
     print()
