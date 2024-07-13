@@ -1,4 +1,3 @@
-<br></br>
 <p align="center">
   <img src="../toy_example.svg"/>
 </p>
