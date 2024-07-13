@@ -4,10 +4,9 @@ import torch.nn as nn
 from ddn.ddn.pytorch.node import *
 
 
-import random
-
 mask = torch.ones(3)
 mask[2] = 0.0
+
 
 ############ DDN with constraint ############
 
@@ -20,33 +19,24 @@ class FundamentalNodeConstraint(EqConstDeclarativeNode):
 
     def objective(self, A, B, w, y):
         """
-        A : b x 3 x N
-        B : b x 3 x N
+        A : b x N x 3
+        B : b x N x 3
         y : b x 3 x 3
         w : b x N
 
         """
-        # Enforce non-negative weights
-        w = torch.nn.functional.relu(w)
-
+        w = nn.functional.relu(w)
         outs = []
 
-        w.view(w.shape[0], w.shape[1], 1, 1)
-        A.permute(0, 2, 1).view((A.shape[0], -1, 1, 3))  # N x 1 x 3
-        B.permute(0, 2, 1).view((B.shape[0], -1, 3, 1))  # N x 1 x 3
-
         for batch in range(w.size(0)):
-            w_ = w[batch].view(w[batch].size(0), 1, 1)  # N x 1 x 1
-            a_ = A[batch].permute(1, 0).view((-1, 1, 3))  # N x 1 x 3
-            b_ = B[batch].permute(1, 0).view((-1, 3, 1))  # N x 3 x 1
-            # M = w_ * a_ * b_
+            a_ = A[batch].view((-1, 1, 3))  # N x 1 x 3
+            b_ = B[batch].view((-1, 3, 1))  # N x 3 x 1
             M = a_ * b_
             M = M.view(-1, 9)  # 10 x 9
             res = M.mm(y[batch].view(9, 1))
             res = res**2
             res = res.squeeze(1)
             out = torch.einsum("n,n-> ", (w[batch] ** 2, res))
-
             outs.append(out.unsqueeze(0))
 
         outs = torch.cat(outs, 0)
@@ -55,17 +45,16 @@ class FundamentalNodeConstraint(EqConstDeclarativeNode):
 
     def equality_constraints(self, A, B, w, y):
         ones = torch.ones(y.shape[0])
-        res1 = (
+        constr1 = (
             torch.einsum("bk,bk->b", [y.view(y.shape[0], 9), y.view(y.shape[0], 9)])
             - ones
         )
-        res2 = torch.linalg.det(y)
+        constr2 = torch.linalg.det(y)
 
-        return torch.cat(((res1).unsqueeze(1), (res2 * 100).unsqueeze(1)), 1)
+        return torch.cat(((constr1).unsqueeze(1), (constr2 * 100).unsqueeze(1)), 1)
 
     def solve(self, A, B, w):
-        # Enforce non-negative weights
-        w = torch.nn.functional.relu(w)
+        w = nn.functional.relu(w)
         A = A.detach()
         B = B.detach()
         w = w.detach()
@@ -74,18 +63,17 @@ class FundamentalNodeConstraint(EqConstDeclarativeNode):
 
     def __solve(self, A, B, w):
         """
-        A : b x 3 x N
-        B : b x 3 x N
+        A : b x N x 3
+        B : b x N x 3
         y : b x 3 x 3
         w : b x N
-
         """
         out_batch = []
 
         for batch in range(w.size(0)):
             w_ = (w[batch]).view(w[batch].size(0), 1, 1)  # N x 1 x 1
-            a_ = A[batch].permute(1, 0).view((-1, 1, 3))  # N x 1 x 3
-            b_ = B[batch].permute(1, 0).view((-1, 3, 1))  # N x 3 x 1
+            a_ = A[batch].view((-1, 1, 3))  # N x 1 x 3
+            b_ = B[batch].view((-1, 3, 1))  # N x 3 x 1
             M = w_**2 * a_ * b_
             M = M.view(-1, 9)
             _, _, Vh = torch.linalg.svd(M)
@@ -106,21 +94,19 @@ class FundamentalNodeConstraint(EqConstDeclarativeNode):
 
 def SVDLayer(A, B, w):
     """
-    A : b x 3 x N
-    B : b x 3 x N
+    A : b x N x 3
+    B : b x N x 3
     w : b x N
 
     A and B are normalized points
     """
-
-    w = torch.nn.functional.relu(w)
-
+    w = nn.functional.relu(w)
     out_batch = []
 
     for batch in range(w.size(0)):
         w_ = (w[batch]).view(w[batch].size(0), 1, 1)  # N x 1 x 1
-        a_ = A[batch].permute(1, 0).view((-1, 1, 3))  # N x 1 x 3
-        b_ = B[batch].permute(1, 0).view((-1, 3, 1))  # N x 3 x 1
+        a_ = A[batch].view((-1, 1, 3))  # N x 1 x 3
+        b_ = B[batch].view((-1, 3, 1))  # N x 3 x 1
         M = w_**2 * a_ * b_
         M = M.view(-1, 9)
         _, _, Vh = torch.linalg.svd(M)
@@ -137,23 +123,23 @@ def SVDLayer(A, B, w):
 
 
 ############ IFT function ############
-# Inherit from Function
+
+
 class IFTFunction(torch.autograd.Function):
     @staticmethod
     def forward(A, B, w):
         """
-        A : b x 3 x N
-        B : b x 3 x N
+        A : b x N x 3
+        B : b x N x 3
         w : b x N
         """
-        w = torch.nn.functional.relu(w)
-
+        w = nn.functional.relu(w)
         out_batch = []
 
         for batch in range(w.size(0)):
             w_ = (w[batch]).view(w[batch].size(0), 1, 1)  # N x 1 x 1
-            a_ = A[batch].permute(1, 0).view((-1, 1, 3))  # N x 1 x 3
-            b_ = B[batch].permute(1, 0).view((-1, 3, 1))  # N x 3 x 1
+            a_ = A[batch].view((-1, 1, 3))  # N x 1 x 3
+            b_ = B[batch].view((-1, 3, 1))  # N x 3 x 1
             M = w_**2 * a_ * b_
             M = M.view(-1, 9)
             _, _, Vh = torch.linalg.svd(M)
@@ -179,10 +165,12 @@ class IFTFunction(torch.autograd.Function):
         grad_A = grad_B = None
 
         b = grad_output.shape[0]
-        w = torch.nn.functional.relu(w)
+        w = nn.functional.relu(w)
 
-        # F : b x 3 x3 ; w : b x 15 ; J_Fw : b x 9 x 15 ;  grad_output : b x 3 x 3
-        J_Fw = compute_jacobians(output, w, A, B)  # b x 9 x 15
+        # F : b x 3 x 3 ; w : b x 15 ; J_Fw : b x 9 x 15 ;  grad_output : b x 3 x 3
+        J_Fw = compute_jacobians(
+            output, w, A.permute(0, 2, 1), B.permute(0, 2, 1)
+        )  # b x 9 x 15
         J_Fw = torch.einsum("bi,bij->bj", grad_output.view(b, 9), J_Fw)
         grad_w = J_Fw.view(b, 15)
 
@@ -200,9 +188,9 @@ class IFTLayer(nn.Module):
 def compute_jacobians(F, w, A, B):
     """
     F : b x 3 x 3
-    w : b x 15
-    A : b x 3 x 15
-    B : b x 3 x 15
+    w : b x N
+    A : b x 3 x N
+    B : b x 3 x N
     """
 
     b = F.shape[0]

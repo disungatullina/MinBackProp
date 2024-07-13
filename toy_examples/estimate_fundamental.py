@@ -1,10 +1,8 @@
 import os
 import sys
 import torch
-import random
 import argparse
 import warnings
-import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
@@ -18,13 +16,6 @@ from utils import get_initial_weights, plot_graphs_w, plot_graphs_loss
 
 torch.set_printoptions(precision=4)
 
-RANDOM_SEED = 15609  # plot paper
-print("RANDOM_SEED", RANDOM_SEED)
-
-random.seed(RANDOM_SEED)
-torch.manual_seed(RANDOM_SEED)
-np.random.seed(RANDOM_SEED)
-
 warnings.filterwarnings("ignore")
 
 
@@ -32,7 +23,7 @@ def run_optimization(optimization_type, A, B, F_true, opt):
     print(optimization_type)
 
     # get the batch size and the number of points
-    b, _, n = A.shape
+    b, n, _ = A.shape
 
     # set upper-level objective J
     J = L.frobenius_norm
@@ -126,7 +117,7 @@ def main(opt):
             w_history_ift,
             w_history_svd=w_history_svd,
             w_history_ddn=w_history_ddn,
-            out_dir=os.path.join(opt.out, "rotation"),
+            out_dir=os.path.join(opt.out, "fundamental"),
         )
 
         plot_graphs_loss(
