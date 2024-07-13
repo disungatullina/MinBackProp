@@ -1,3 +1,8 @@
+<br></br>
+<p align="center">
+  <img src="../toy_example.svg"/>
+</p>
+
 ## Requirements
 For our experiments, we used the versions of Python and PyTorch
 ```
