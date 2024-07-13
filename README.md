@@ -7,7 +7,11 @@ Source code for the paper [MinBackProp – Backpropagating through Minimal Solve
 <br></br>
 <p align="center">
   <img src="scheme-github.svg"/>
-</p> 
+</p>
+<br></br>
+<p align="center">
+  <img src="table.svg" width=500/>
+</p>
 
 ## Outlier Detection for Essential Matrix Estimation
 We evaluate our MinBackProp on outlier detection for essential matrix estimation. This code is based on the [baseline](https://github.com/weitong8591/differentiable_ransac/tree/fc40fe0a5a7eeb0e2ec6b185d6218c2005a98cf5) we compare with; the forward pass is the same for both the baseline and MinBackProp, while the backward pass differs ($\color{rgb(192,0,0)}{\text{Autograd}}$ vs $\color{rgb(0,112,192)}{\text{DDN}}$ / $\color{rgb(0,176,80)}{\text{IFT}}$). 
