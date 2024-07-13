@@ -5,8 +5,8 @@ def create_toy_dataset():
     """
     N = 15 correspondences, without noise added; b = 1
 
-    A : b x N x 3
-    B : b x N x 3
+    A : b x 3 x N
+    B : b x 3 x N
     F_true : b x 3 x 3
     gt_mask : b x N
     """
@@ -30,7 +30,7 @@ def create_toy_dataset():
                 [1086.569, -558.349, 1.0],
             ]
         ]
-    )
+    ).permute(0,2,1)
     B = torch.tensor(
         [
             [
@@ -51,7 +51,7 @@ def create_toy_dataset():
                 [2306.285, 2028.933, 1.0],
             ]
         ]
-    )
+    ).permute(0,2,1)
     F_true = torch.tensor(
         [
             [
