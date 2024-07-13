@@ -1,40 +1,41 @@
 import os
 import sys
 import torch
+import random
 import argparse
-from math import degrees
+import warnings
+import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-import rotation.losses as L
+
 from ddn.ddn.pytorch.node import *
-from rotation.nodes import RigitNodeConstraint, SVDLayer, IFTLayer
-from rotation.datasets import get_dataset
+
+import fundamental.losses as L
+from fundamental.datasets import get_dataset
+from fundamental.nodes import SVDLayer, FundamentalNodeConstraint, IFTLayer
 from utils import get_initial_weights, plot_graphs_w, plot_graphs_loss
 
-import warnings
+torch.set_printoptions(precision=4)
+
+RANDOM_SEED = 15609  # plot paper
+print("RANDOM_SEED", RANDOM_SEED)
+
+random.seed(RANDOM_SEED)
+torch.manual_seed(RANDOM_SEED)
+np.random.seed(RANDOM_SEED)
 
 warnings.filterwarnings("ignore")
 
-# set main options
-torch.set_printoptions(linewidth=200)
-torch.set_printoptions(precision=4)
 
-
-def run_optimization(optimization_type, P, Q, R_true, opt):
-    print()
+def run_optimization(optimization_type, A, B, F_true, opt):
     print(optimization_type)
 
     # get the batch size and the number of points
-    b, _, n = P.shape
+    b, _, n = A.shape
 
     # set upper-level objective J
-    if opt.upper_level == "geometric":
-        J = L.angle_error
-    elif opt.upper_level == "algebraic":
-        J = L.frobenius_norm
-    else:
-        raise Exception("Upper-level loss is undefined.")
+    J = L.frobenius_norm
 
     # init weights
     w_init = get_initial_weights(b, n, opt.init_weights)
@@ -43,7 +44,7 @@ def run_optimization(optimization_type, P, Q, R_true, opt):
     if optimization_type == "IFT":
         optimization_layer = IFTLayer()
     elif optimization_type == "DDN":
-        node = RigitNodeConstraint()
+        node = FundamentalNodeConstraint()
         optimization_layer = DeclarativeLayer(node)
     elif optimization_type == "SVD":
         optimization_layer = SVDLayer
@@ -51,53 +52,57 @@ def run_optimization(optimization_type, P, Q, R_true, opt):
         raise Exception("Wrong optimization type.")
 
     # set optimizer
-    optimizer = torch.optim.SGD([w], lr=opt.lr)
+    optimizer = torch.optim.SGD(
+        [w],
+        lr=opt.lr,
+    )
 
     loss_history = []
-    w_history = [[w[0, 0].item()], [w[0, 1].item()], [w[0, 2].item()], [w[0, 3].item()]]
+    w_history = [[w[0, i].item()] for i in range(n)]
 
     def reevaluate():
         optimizer.zero_grad()
-        R = optimization_layer(P, Q, w)
-        loss = J(R_true, R)
+        F = optimization_layer(A, B, w)
+        if (F * F_true).sum(dim=(-2, -1)) < 0:
+            F_ = -F
+        else:
+            F_ = F
+        loss = J(F_true, F_)
         loss_history.append(loss[0].item())
         loss.backward()
         torch.nn.utils.clip_grad_norm_([w], 1.0)
         return loss
 
-    # optimize
     for i in range(opt.num_iter):
         optimizer.step(reevaluate)
 
-        w_history[0].append(torch.nn.functional.relu(w[0, 0]).item())
-        w_history[1].append(torch.nn.functional.relu(w[0, 1]).item())
-        w_history[2].append(torch.nn.functional.relu(w[0, 2]).item())
-        w_history[3].append(torch.nn.functional.relu(w[0, 3]).item())
+        w_ = torch.nn.functional.relu(w)
+        w_ /= w_.sum(dim=1, keepdim=True)
+        for i in range(n):
+            w_history[i].append(torch.nn.functional.relu(w_[0, i]).item())
 
     # get final results
-    w = torch.nn.functional.relu(w)  # enforce non-negativity
-    R = optimization_layer(P, Q, w)
+    w = torch.nn.functional.relu(w)
+    w /= w.sum(dim=1, keepdim=True)
+    F = optimization_layer(A, B, w)
+    F = F / torch.norm(F)
+    if (F * F_true).sum(dim=(-2, -1)) < 0:
+        F = -F
 
-    # compute errors
-    angle_error = L.angle_error(R_true, R)
-    frob_norm = L.frobenius_norm(R_true, R)
+    # compute error
+    frob_norm = L.frobenius_norm(F_true, F)
 
-    # print errors
-    print(
-        "Rotation Error: {:0.4f} degrees".format(
-            degrees(angle_error[0, ...].squeeze().detach().numpy())
-        )
-    )
     print("Algebraic Error: {}".format(frob_norm[0, ...].detach().numpy()))
 
     return w_history, loss_history
 
 
 def main(opt):
-    print("Rotation matrix estimation")
+    print("Fundamental matrix estimation")
+    print()
 
     # load dataset
-    P, Q, R_true = get_dataset()
+    A, B, F_true, w_true = get_dataset()
 
     w_history_svd = None
     w_history_ddn = None
@@ -106,12 +111,14 @@ def main(opt):
 
     # run optimization
     w_history_ift, loss_history_ift = run_optimization(
-        "IFT", P, Q, R_true, opt
+        "IFT", A, B, F_true, opt
     )  # True by default
     if opt.autograd:
-        w_history_svd, loss_history_svd = run_optimization("SVD", P, Q, R_true, opt)
+        print()
+        w_history_svd, loss_history_svd = run_optimization("SVD", A, B, F_true, opt)
     if opt.ddn:
-        w_history_ddn, loss_history_ddn = run_optimization("DDN", P, Q, R_true, opt)
+        print()
+        w_history_ddn, loss_history_ddn = run_optimization("DDN", A, B, F_true, opt)
 
     # plot values of w and global loss
     if opt.plot:
@@ -126,7 +133,7 @@ def main(opt):
             loss_history_ift,
             loss_history_svd=loss_history_svd,
             loss_history_ddn=loss_history_ddn,
-            out_dir=os.path.join(opt.out, "rotation"),
+            out_dir=os.path.join(opt.out, "fundamental"),
         )
 
     print()
@@ -135,7 +142,7 @@ def main(opt):
 
 
 if __name__ == "__main__":
-    PARSER = argparse.ArgumentParser(description="Rotation matrix estimation")
+    PARSER = argparse.ArgumentParser(description="Fundamental matrix estimation")
     PARSER.add_argument(
         "--plot",
         action="store_true",
@@ -144,29 +151,23 @@ if __name__ == "__main__":
     PARSER.add_argument(
         "--ift",
         action="store_true",
-        help="compute R and w with backpropagation via IFT, default True",
+        help="compute F and w with backpropagation via IFT, default True",
     )
     PARSER.add_argument(
         "--ddn",
         action="store_true",
-        help="compute R and w with backpropagation via DDN, default False",
+        help="compute F and w with backpropagation via DDN, default False",
     )
     PARSER.add_argument(
         "--autograd",
         action="store_true",
-        help="compute R and w with backpropagation via autograd, default False",
+        help="compute F and w with backpropagation via autograd, default False",
     )
     PARSER.add_argument(
         "--init_weights",
         type=str,
         default="uniform",
         help="initialization for weights: uniform|random , default 'uniform'",
-    )
-    PARSER.add_argument(
-        "--upper_level",
-        type=str,
-        default="geometric",
-        help="upper-level objective: geometric|algebraic , default 'geometric'",
     )
     PARSER.add_argument(
         "--out",
@@ -184,8 +185,8 @@ if __name__ == "__main__":
     PARSER.add_argument(
         "--lr",
         type=float,
-        default=1e-1,
-        help="learning rate, default 0.1",
+        default=1000.0,
+        help="learning rate, default 1000.",
     )
 
     ARGS = PARSER.parse_args()

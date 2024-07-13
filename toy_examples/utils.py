@@ -3,14 +3,6 @@ import torch
 import matplotlib.pyplot as plt
 
 
-Y_LABELS = [
-    "weight of the outlier",
-    "weight of an inlier",
-    "weight of an inlier",
-    "weight of an inlier",
-]
-
-
 def get_initial_weights(b, n, init_type):
     # Generate weights (uniform):
     if init_type == "uniform":
@@ -29,6 +21,10 @@ def plot_graphs_w(
 ):
     plt.rcParams["font.size"] = 14
     for i in range(len(w_history_ift)):
+        if i == 0:
+            Y_LABEL = "weight of the outlier"
+        else:
+            Y_LABEL = "weight of an inlier"
         plt.figure(figsize=(9, 6))
         plt.axes()
         if w_history_svd is not None:
@@ -37,7 +33,7 @@ def plot_graphs_w(
             plt.plot(w_history_ddn[i], "--", label="DDN", linewidth=4)
         plt.plot(w_history_ift[i], "--", label="IFT", color="green", linewidth=4)
         plt.ylabel(
-            Y_LABELS[i],
+            Y_LABEL,
             fontsize=18,
         )
         plt.xlabel(
