@@ -77,6 +77,21 @@ Download the RootSIFT features of the PhotoTourism dataset from [here](https://c
 ```
 See more command line arguments in ```utils.py```.
 
+### Docker image
+The current Docker image is built for CPU usage. If you need a GPU version, please modify the ```Dockerfile``` accordingly.
+```bash
+docker pull dsungatullina/minbackprop
+docker run -it dsungatullina/minbackprop
+```
+For training, run the following command
+```bash
+python3 train.py -ift 1 -nf 2000 -m pretrained_models/weights_init_net_3_sampler_0_epoch_1000_E_rs_r0.80_t0.00_w1_1.00_.net -bs 32 -e 10 -tr 1 -t 0.75 -pth data 
+```
+To start the inference, run
+```bash
+python3 test_magsac.py -nf 2000 -m models/ift.net -bs 32 -bm 1 -t 2 -pth data
+```
+
 ## Toy examples
 
 ### 3D Point Registration with an Outlier
@@ -90,9 +105,6 @@ python estimate_rotation.py --ift --ddn --autograd --plot
 cd toy_examples
 python estimate_fundamental.py --ift --ddn --autograd --plot
 ```
-
-## TODO
-- [x] Docker image for outlier detection for essential matrix estimation
 
 ## Citation
 If you use our algorithm, please cite
