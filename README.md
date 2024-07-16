@@ -92,7 +92,7 @@ python estimate_fundamental.py --ift --ddn --autograd --plot
 ```
 
 ## TODO
-- [ ] Docker image for outlier detection for essential matrix estimation
+- [x] Docker image for outlier detection for essential matrix estimation
 
 ## Citation
 If you use our algorithm, please cite
