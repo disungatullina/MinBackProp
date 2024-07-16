@@ -7,7 +7,6 @@ RUN apt-get upgrade -y
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get install -y wget unzip curl zlib1g zlib1g-dev gcc g++ build-essential libcurl4-openssl-dev git python3 python3-setuptools python3-dev python3-pip libblas-dev liblapack-dev ffmpeg libsm6 libxext6 libgflags-dev libopencv-dev libeigen3-dev vim python3-h5py pkg-config libhdf5-dev
-
 RUN apt-get upgrade -y cmake qt5-default
 
 RUN python3 -m pip install --upgrade pip setuptools wheel cmake
@@ -16,6 +15,7 @@ RUN python3 -m pip install torch==1.12.1 torchvision torchaudio --index-url http
 
 WORKDIR /var/www/
 
+# Compile gflags
 RUN git clone https://github.com/gflags/gflags.git
 WORKDIR gflags
 RUN mkdir build_ 
@@ -25,6 +25,7 @@ RUN make -j2
 RUN make -j2 install
 WORKDIR /var/www/
 
+# Compile glog
 RUN git clone https://github.com/google/glog.git
 WORKDIR glog
 RUN mkdir build
@@ -34,6 +35,7 @@ RUN make -j2
 RUN make -j2 install
 WORKDIR /var/www/
 
+# Compile OpenCV
 RUN git clone https://github.com/opencv/opencv.git
 WORKDIR opencv
 RUN git checkout 3.4.2
@@ -54,6 +56,7 @@ WORKDIR /var/www/
 RUN sh -c 'echo "/usr/local/lib" >> /etc/ld.so.conf.d/opencv.conf'
 RUN ldconfig
 
+# Compile MAGSAC
 WORKDIR /var/www/
 RUN git clone https://github.com/disungatullina/magsac.git --recursive
 WORKDIR magsac
@@ -69,6 +72,7 @@ WORKDIR ..
 RUN apt-get install qt5-default -y
 RUN python3 -m pip install --upgrade h5py
 
+# Set up MinBackProp
 RUN git clone https://github.com/disungatullina/MinBackProp.git --recurse-submodules -j8
 WORKDIR MinBackProp
 RUN wget https://cmp.felk.cvut.cz/~weitong/nabla_ransac/diff_ransac_data.zip
