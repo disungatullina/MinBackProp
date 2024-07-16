@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../toy_example.svg" width=900/>
+  <img src="toy_example.svg" width=900/>
 </p>
 
 ## Requirements
