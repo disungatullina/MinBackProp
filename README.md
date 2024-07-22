@@ -109,12 +109,18 @@ python estimate_fundamental.py --ift --ddn --autograd --plot
 ## Citation
 If you use our algorithm, please cite
 ```
-@misc{sungatullina2024minbackprop,
-      title={MinBackProp -- Backpropagating through Minimal Solvers}, 
-      author={Diana Sungatullina and Tomas Pajdla},
-      year={2024},
-      eprint={2404.17993},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@ARTICLE{Sungatullina2024-A83,
+author={Diana Sungatullina and  Tomas Pajdla},
+title={MinBackProp â€“ Backpropagating through Minimal Solvers},
+journal={Journal of WSCG},
+year={2024},
+volume={32},
+number = {1-2},
+pages={41-50},
+doi={10.24132/JWSCG.2024.5},
+publisher={Union Agency, Science Press},
+issn={1213-6972},
+abbrev_source_title={J WSCG},
+document_type={Article},
 }
 ```
