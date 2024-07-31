@@ -111,7 +111,7 @@ If you use our algorithm, please cite
 ```
 @ARTICLE{Sungatullina2024-A83,
 author={Diana Sungatullina and  Tomas Pajdla},
-title={MinBackProp â€“ Backpropagating through Minimal Solvers},
+title={MinBackProp – Backpropagating through Minimal Solvers},
 journal={Journal of WSCG},
 year={2024},
 volume={32},
